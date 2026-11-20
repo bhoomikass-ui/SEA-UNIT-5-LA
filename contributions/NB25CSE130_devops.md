@@ -2,8 +2,8 @@ CASE STUDY 3
 
 DevOps Practices and CI/CD Pipelines
 
-Student Name: Diddekunta Bhavitha
-USN: NB25CSE106
+Student Name: Gurram Keerthana
+USN: NB25CSE130
 Subject: Software Engineering
 Topic: DevOps Practices and CI/CD Pipelines
 
