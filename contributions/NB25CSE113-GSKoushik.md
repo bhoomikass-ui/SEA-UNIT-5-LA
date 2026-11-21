@@ -12,7 +12,7 @@ DevOps comes from two words: **Development (Dev)** and **Operations (Ops)**. It 
 
 DevOps is based on automation, shared responsibility, quick feedback and small, frequent releases.
 
-**Case study problem:** An online shopping company keeps updating its app with new features (offers, wishlist, delivery tracking) and bug fixes. Because testing and deployment are done by hand, every release is slow and mistakes reach customers. DevOps solves this by automating these steps.
+**Example:** An online shopping company keeps updating its app with new features such as offers, wishlist and delivery tracking. Because testing and deployment are done by hand, every release is slow and mistakes reach customers. DevOps automates these steps so updates go out quickly and safely.
 
 ---
 
@@ -35,13 +35,14 @@ DevOps is based on automation, shared responsibility, quick feedback and small, 
 
 ## 3. CI/CD Pipeline Stages
 
-1. **Plan & Code:** The team decides on a change (e.g. a "Buy Now" button) and developers write it.
-2. **Commit:** Code is pushed to GitHub, which triggers the pipeline automatically.
-3. **Build:** A CI tool (GitHub Actions / Jenkins) compiles the code and creates a package.
-4. **Test:** Automated unit, integration and UI tests run on the new build.
-5. **Release:** The tested build is stored as a version-numbered package (e.g. Docker image) ready for release.
-6. **Deploy:** The package is put on a staging server first, then on the live (production) server.
-7. **Monitor:** Tools watch errors, speed and failed payments, and send feedback to developers.
+The CI/CD pipeline has the following stages:
+
+1. **Code:** Developers write the new feature (e.g. a "Buy Now" button) and push it to a shared repository on GitHub.
+2. **Build:** A CI tool such as GitHub Actions or Jenkins compiles the code and creates a runnable package.
+3. **Test:** Automated unit, integration and UI tests check the new build for bugs.
+4. **Release:** The tested build is stored as a version-numbered package, ready to go live.
+5. **Deploy:** The package is put on the production server so customers can use it.
+6. **Monitor:** Tools watch errors, speed and failed payments, and send feedback to developers.
 
 ---
 
@@ -75,43 +76,40 @@ DevOps is based on automation, shared responsibility, quick feedback and small, 
 ## 6. CI/CD Pipeline Diagram
 
 ```mermaid
-flowchart LR
-    A[Code] --> B[Commit to GitHub]
-    B --> C[Build]
-    C --> D[Test]
-    D -- Fail --> A
-    D -- Pass --> E[Release]
-    E --> F[Deploy]
-    F --> G[Monitor]
-    G -- Feedback --> A
+flowchart TD
+    A[CODE] --> B[BUILD]
+    B --> C[TEST]
+    C --> D[RELEASE]
+    D --> E[DEPLOYMENT]
+    E --> F[MONITOR]
+    F --> G[Continuous Feedback]
+    G --> A
 ```
 
 **Pipeline Flow:**
 
 ```
-    CODE
-      |
-      v
-    COMMIT (GitHub)
-      |
-      v
-    BUILD
-      |
-      v
-    TEST ----(fail)----> back to CODE
-      |
-    (pass)
-      v
-    RELEASE
-      |
-      v
-    DEPLOY
-      |
-      v
-    MONITOR
-      |
-      v
-  Feedback ------------> back to CODE
+        CODE
+          |
+          v
+        BUILD
+          |
+          v
+        TEST
+          |
+          v
+       RELEASE
+          |
+          v
+     DEPLOYMENT
+          |
+          v
+       MONITOR
+          |
+          v
+  Continuous Feedback
+          |
+          +----------> CODE
 ```
 
 ---
