@@ -1,169 +1,121 @@
 # DevOps Practices and CI/CD Pipelines
 
-## 1. Title and Student Details
-
-| Field | Details |
-|-------|---------|
-| **Name** | G S Koushik |
-| **USN** | NB25CSE113 |
-| **Assigned Case Study** | Question 3 – DevOps Practices and CI/CD Pipelines (Online Shopping Application) |
+**Name:** G S Koushik
+**USN:** NB25CSE113
+**Assigned Case Study:** Question 3 – DevOps Practices and CI/CD Pipelines
 
 ---
 
-## 2. Introduction
+## 1. Introduction to DevOps
 
-### What is DevOps?
+DevOps comes from two words: **Development (Dev)** and **Operations (Ops)**. It is a way of working in which the people who write the software and the people who run it on servers work as one team instead of separate groups.
 
-**DevOps** is a set of practices, tools and a culture that brings software **Development (Dev)** and IT **Operations (Ops)** teams together. Instead of developers writing code and "throwing it over the wall" to an operations team, both groups share responsibility for building, testing, releasing and running the software.
+DevOps is based on automation, shared responsibility, quick feedback and small, frequent releases.
 
-The main goals of DevOps are to:
-
-- Deliver new features and bug fixes **faster and more often**
-- Improve **software quality and reliability**
-- **Automate** repetitive manual tasks such as building, testing and deploying
-- Get **quick feedback** from tests and from real users
-
-Key DevOps practices include version control, automated testing, Continuous Integration, Continuous Delivery/Deployment, Infrastructure as Code, and continuous monitoring.
-
-### Meaning of CI and CD
-
-| Term | Meaning |
-|------|---------|
-| **Continuous Integration (CI)** | Developers merge (integrate) their code changes into a shared repository frequently, often several times a day. Every change automatically triggers a **build** and a set of **automated tests**, so integration errors are found early. |
-| **Continuous Delivery (CD)** | Every change that passes CI is automatically prepared and kept in a **deployable state**. Release to production is done with a **single manual approval** (a button click). |
-| **Continuous Deployment (CD)** | Goes one step further: every change that passes all automated tests is **deployed to production automatically**, without any manual step. |
+**Case study problem:** An online shopping company keeps updating its app with new features (offers, wishlist, delivery tracking) and bug fixes. Because testing and deployment are done by hand, every release is slow and mistakes reach customers. DevOps solves this by automating these steps.
 
 ---
 
-## 3. Problem Analysis
+## 2. Meaning of Continuous Integration and Continuous Delivery/Deployment
 
-A software company develops an **online shopping application** (product catalogue, cart, payments, order tracking). Developers frequently update it with new features and bug fixes, but the current process is manual:
+**Continuous Integration (CI):**
+- Every developer merges code into the main GitHub repository many times a day.
+- Each merge automatically starts a build and runs the tests.
+- Mistakes and merge conflicts are found within minutes, not weeks later.
 
-| Problem in Current Process | Effect |
-|----------------------------|--------|
-| Code from many developers is merged only occasionally | Large, painful merges and "it works on my machine" conflicts |
-| Testing is done manually by testers | Slow, repetitive, and some test cases get skipped |
-| Builds are prepared by hand | Different builds on different machines; missing files or wrong versions |
-| Deployment to servers is done manually | Human errors (wrong config, missed step), downtime during release |
-| Releases happen rarely and in big batches | Bugs reach customers, and it is hard to find which change caused a failure |
-| No quick rollback | A failed release can stop customers from shopping and cause revenue loss |
+**Continuous Delivery (CD):**
+- Code that passes CI is automatically packaged and kept ready to release at any time.
+- Sending it to the live server needs one manual approval (a button click).
 
-**Root cause:** the build–test–deploy process depends on people doing repetitive steps by hand. This causes **delays** and **errors**.
+**Continuous Deployment:**
+- Code that passes every automated check goes to the live server automatically.
+- There is no manual approval step.
 
 ---
 
-## 4. Proposed Solution – DevOps with a CI/CD Pipeline
+## 3. CI/CD Pipeline Stages
 
-The company should adopt DevOps practices and set up an automated **CI/CD pipeline** using tools such as **Git/GitHub** (version control), **GitHub Actions or Jenkins** (pipeline automation), **JUnit/Selenium** (testing), **Docker** (packaging), **Kubernetes/AWS** (deployment) and **Prometheus/Grafana** (monitoring).
+1. **Plan & Code:** The team decides on a change (e.g. a "Buy Now" button) and developers write it.
+2. **Commit:** Code is pushed to GitHub, which triggers the pipeline automatically.
+3. **Build:** A CI tool (GitHub Actions / Jenkins) compiles the code and creates a package.
+4. **Test:** Automated unit, integration and UI tests run on the new build.
+5. **Release:** The tested build is stored as a version-numbered package (e.g. Docker image) ready for release.
+6. **Deploy:** The package is put on a staging server first, then on the live (production) server.
+7. **Monitor:** Tools watch errors, speed and failed payments, and send feedback to developers.
 
-### 4.1 CI/CD Pipeline Diagram
+---
+
+## 4. Explanation of Build, Test and Deployment
+
+**Build:**
+- Turns source code into a working application package.
+- Runs on a clean server every time, so all builds are the same.
+- Example: after adding a "Buy Now" button, a new version of the shopping app is built automatically.
+
+**Test:**
+- Runs test cases without a human tester.
+- Checks important features: sign-up, search, add to cart, coupon discount and checkout.
+- If any test fails, the pipeline stops and the developer is told immediately.
+
+**Deployment:**
+- Copies the tested version to the servers using scripts, not manual steps.
+- Can update the app with no downtime and roll back to the old version if a problem appears.
+- Example: customers see the new "Buy Now" button within minutes of the code being approved.
+
+---
+
+## 5. Three Benefits of Automation
+
+1. **Speed:** Updates reach customers in minutes or hours instead of days, because no one waits for manual testing or deployment.
+2. **Fewer Mistakes:** The same automated steps run every time, so forgotten steps and wrong settings are avoided, and bugs are caught before release.
+3. **Reliability:** Small, frequent releases with quick rollback keep the shopping site stable and customers happy.
+
+---
+
+## 6. CI/CD Pipeline Diagram
 
 ```mermaid
 flowchart LR
-    A[Developer<br/>writes code] --> B[Commit & Push<br/>to GitHub]
-    B --> C[Build<br/>compile & package]
-    C --> D[Automated Tests<br/>unit, integration, UI]
-    D -->|Tests fail| X[Notify developer<br/>fix the bug]
-    X --> A
-    D -->|Tests pass| E[Create Artifact<br/>Docker image]
-    E --> F[Deploy to<br/>Staging]
-    F --> G[Acceptance &<br/>Security Tests]
-    G --> H{Approval?}
-    H -->|Continuous Delivery:<br/>manual approve| I[Deploy to<br/>Production]
-    H -->|Continuous Deployment:<br/>automatic| I
-    I --> J[Monitor<br/>logs, errors, performance]
-    J -->|Feedback| A
+    A[Code] --> B[Commit to GitHub]
+    B --> C[Build]
+    C --> D[Test]
+    D -- Fail --> A
+    D -- Pass --> E[Release]
+    E --> F[Deploy]
+    F --> G[Monitor]
+    G -- Feedback --> A
 ```
 
-Text version of the same pipeline:
+**Pipeline Flow:**
 
 ```
- Code --> Commit --> Build --> Test --> Package --> Staging --> Production --> Monitor
-   ^                            |                                                 |
-   |<------ fail: notify -------|                                                 |
-   |<------------------------------ feedback ------------------------------------|
-```
-
-### 4.2 CI/CD Pipeline Stages
-
-| # | Stage | What Happens in the Shopping Application |
-|---|-------|------------------------------------------|
-| 1 | **Source / Commit** | A developer adds a feature (e.g. "apply discount coupon") on a branch and pushes it to GitHub. A Pull Request is opened and reviewed. The push automatically **triggers** the pipeline. |
-| 2 | **Build** | The CI server checks out the code, installs dependencies, and compiles/packages the application (e.g. `mvn package` or `npm run build`). If the build fails, the pipeline stops and the developer is notified. |
-| 3 | **Test** | Automated tests run: **unit tests** (cart total, coupon logic), **integration tests** (cart ↔ payment service), and **UI tests** (Selenium checkout flow). Code-quality and security scans can also run here. |
-| 4 | **Package / Artifact** | The tested build is packaged as a versioned **Docker image** and stored in a registry, so the *same* artifact is used in every environment. |
-| 5 | **Deploy to Staging** | The image is deployed automatically to a **staging** server that is a copy of production. Acceptance tests and performance tests run here. |
-| 6 | **Deploy to Production** | In **Continuous Delivery**, a release manager approves with one click. In **Continuous Deployment**, it goes live automatically. Strategies like **blue-green** or **canary** releases avoid downtime and allow instant **rollback**. |
-| 7 | **Monitor & Feedback** | Tools track errors, response time and failed payments. Alerts and user feedback go back to developers, starting the next cycle. |
-
-### 4.3 Explanation of Build, Test and Deployment
-
-**Build**
-- Converts source code into a runnable application.
-- Done automatically on a clean server for **every commit**, so builds are consistent and repeatable.
-- Example: compiling the Java backend and bundling the React frontend into a Docker image.
-
-**Test**
-- Automated test suites check that new code works and has not broken existing features (**regression testing**).
-- Example: a unit test confirms that a 10% coupon on ₹1,000 gives a total of ₹900; a Selenium test confirms a user can add an item to the cart and check out.
-- If any test fails, the change is **blocked** from moving forward.
-
-**Deployment**
-- Moves the tested artifact to staging and then to production using scripts instead of manual steps.
-- Configuration is kept in code (**Infrastructure as Code**, e.g. Terraform, Kubernetes YAML), so every environment is set up the same way.
-- If a problem appears after release, the pipeline can **roll back** to the previous version in minutes.
-
-### 4.4 Sample Pipeline Configuration (GitHub Actions)
-
-```yaml
-name: Shopping-App CI/CD
-on:
-  push:
-    branches: [ main ]
-jobs:
-  build-test-deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4          # 1. Get source code
-      - name: Build
-        run: npm install && npm run build  # 2. Build
-      - name: Run tests
-        run: npm test                      # 3. Automated tests
-      - name: Build Docker image
-        run: docker build -t shop-app:${{ github.sha }} .   # 4. Package
-      - name: Deploy to staging
-        run: ./scripts/deploy.sh staging   # 5. Deploy
+    CODE
+      |
+      v
+    COMMIT (GitHub)
+      |
+      v
+    BUILD
+      |
+      v
+    TEST ----(fail)----> back to CODE
+      |
+    (pass)
+      v
+    RELEASE
+      |
+      v
+    DEPLOY
+      |
+      v
+    MONITOR
+      |
+      v
+  Feedback ------------> back to CODE
 ```
 
 ---
 
-## 5. Benefits and Challenges
+## Conclusion
 
-### Benefits of Automation
-
-1. **Faster releases** – Changes move from commit to production in minutes or hours instead of weeks, so new shopping features and bug fixes reach customers quickly.
-2. **Fewer errors and higher quality** – Every change is built and tested the same way, automatically. Bugs are caught early, when they are cheapest to fix, and human mistakes in manual deployment are removed.
-3. **Reliable, low-risk deployments** – Small, frequent releases with automatic rollback mean that if something breaks, it is easy to find the cause and restore the previous version, reducing downtime and lost sales.
-
-Additional benefits: better collaboration between Dev and Ops teams, quick feedback for developers, and more time for developers to build features instead of doing repetitive tasks.
-
-### Challenges / Limitations
-
-- **Initial setup cost and effort** – Designing the pipeline, writing automated tests and learning tools takes time and money.
-- **Cultural change** – Teams must move from separate Dev and Ops roles to shared responsibility.
-- **Test maintenance** – Automated tests must be kept up to date; poor or "flaky" tests reduce trust in the pipeline.
-- **Security** – Secrets (payment API keys, passwords) used by the pipeline must be stored and managed securely.
-
----
-
-## 6. Conclusion
-
-The online shopping company's delays and errors come from manual integration, testing and deployment. By adopting **DevOps** and an automated **CI/CD pipeline**, every code change is automatically **built, tested, packaged, deployed and monitored**. Continuous Integration catches problems early, and Continuous Delivery/Deployment makes releases fast, consistent and easy to roll back. Although the setup requires effort and a change in team culture, automation lets the company deliver new features **faster, more reliably and with fewer errors**, giving customers a better shopping experience.
-
----
-
-### References
-
-- Ian Sommerville, *Software Engineering*, 10th Edition – Chapter on DevOps and Code Management
-- GitHub Actions Documentation – https://docs.github.com/actions
-- Atlassian – Continuous Integration vs Delivery vs Deployment – https://www.atlassian.com/continuous-delivery
+Manual testing and deployment were slowing down the online shopping application and causing errors. Using DevOps and a CI/CD pipeline, every change is built, tested, released, deployed and monitored automatically. This gives the company faster updates, fewer errors and a more reliable application for its customers.
