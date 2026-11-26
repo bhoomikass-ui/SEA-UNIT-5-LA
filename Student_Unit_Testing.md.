@@ -1,0 +1,9 @@
+A software company develops an online shopping application. Developers frequently update the application to introduce new features and fix bugs. However, manual testing and deployment are causing delays and errors.
+Apply DevOps practices and a CI/CD pipeline to automate the software development and deployment process. Explain the stages involved and identify the benefits of automation.
+Expected contribution:
+●	Introduction to DevOps
+●	Meaning of Continuous Integration and Continuous Delivery/Deployment
+●	CI/CD pipeline stages
+●	Explanation of build, test, and deployment
+●	Three benefits of automation
+●	CI/CD pipeline diagram
